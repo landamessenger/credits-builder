@@ -63,7 +63,7 @@ Map<String, dynamic> loadDependenciesFile() {
   return config;
 }
 
-Future<PubPackage?> getInfo(String id) async {
+Future<PubPackage?> _getInfo(String id) async {
   try {
     return await PubClient().packageInfo(id);
   } catch (e) {
@@ -71,7 +71,7 @@ Future<PubPackage?> getInfo(String id) async {
   }
 }
 
-Future<PackagePublisher?> getPublisher(String id) async {
+Future<PackagePublisher?> _getPublisher(String id) async {
   try {
     return await PubClient().packagePublisher(id);
   } catch (e) {
@@ -81,17 +81,25 @@ Future<PackagePublisher?> getPublisher(String id) async {
 
 Future<Dependency?> getData(String id, dynamic version) async {
   try {
-    var v = version.toString().contains('git') ? 'git' : version.toString();
-    final info = await getInfo(id);
-    final publisher = await getPublisher(id);
+    var v = version.toString().contains('git')
+        ? 'git'
+        : (version.toString().contains('{path:')
+            ? 'local'
+            : (version.toString().contains('{sdk: flutter}')
+                ? 'flutter'
+                : version.toString()));
+
+    final info = await _getInfo(id);
+    final publisher = await _getPublisher(id);
     var url = Uri.https('pub.dev', 'packages/$id');
     var urlLicense = Uri.https('pub.dev', 'packages/$id/license');
     var response = await http.get(url);
     var responseLicense = await http.get(urlLicense);
 
-    final repository = getRepository(response.body);
-    final licenseType = getLicense(id, response.body);
-    final licenseContent = getLicenseContent(responseLicense.body);
+    final repository = _getRepository(response.body);
+    final licenseType = _getLicense(id, response.body);
+    final licenseContent = _getLicenseContent(responseLicense.body);
+
     return Dependency(
       id: id,
       repository: repository,
@@ -100,12 +108,12 @@ Future<Dependency?> getData(String id, dynamic version) async {
       publisher: publisher?.publisherId ?? "",
       currentVersion: v,
       version: info?.version ?? "",
-      supportsAndroid: supportAndroid(response.body),
-      supportsIOS: supportIOS(response.body),
-      supportsLinux: supportLinux(response.body),
-      supportsMacOS: supportMacOS(response.body),
-      supportsWeb: supportWeb(response.body),
-      supportsWindows: supportWindows(response.body),
+      supportsAndroid: _supportAndroid(response.body),
+      supportsIOS: _supportIOS(response.body),
+      supportsLinux: _supportLinux(response.body),
+      supportsMacOS: _supportMacOS(response.body),
+      supportsWeb: _supportWeb(response.body),
+      supportsWindows: _supportWindows(response.body),
     );
   } catch (e) {
     if (kDebugMode) {
@@ -115,7 +123,7 @@ Future<Dependency?> getData(String id, dynamic version) async {
   }
 }
 
-String getRepository(String content) {
+String _getRepository(String content) {
   try {
     String a = content.split("pkg-infobox-metadata")[1];
     String b = a.split('<h3 class="title">')[0];
@@ -129,7 +137,7 @@ String getRepository(String content) {
   }
 }
 
-String getLicense(String id, String content) {
+String _getLicense(String id, String content) {
   try {
     String a =
         content.split('alt="Icon for licenses." width="14" height="14"/>')[1];
@@ -140,7 +148,7 @@ String getLicense(String id, String content) {
   }
 }
 
-String getLicenseContent(String content) {
+String _getLicenseContent(String content) {
   try {
     String a = content.split('<pre>')[1];
     String b = a.split('</pre>')[0];
@@ -150,7 +158,7 @@ String getLicenseContent(String content) {
   }
 }
 
-bool supportAndroid(String content) {
+bool _supportAndroid(String content) {
   try {
     return _platformSupport('android', content);
   } catch (e) {
@@ -158,7 +166,7 @@ bool supportAndroid(String content) {
   }
 }
 
-bool supportIOS(String content) {
+bool _supportIOS(String content) {
   try {
     return _platformSupport('ios', content);
   } catch (e) {
@@ -166,7 +174,7 @@ bool supportIOS(String content) {
   }
 }
 
-bool supportMacOS(String content) {
+bool _supportMacOS(String content) {
   try {
     return _platformSupport('macos', content);
   } catch (e) {
@@ -174,7 +182,7 @@ bool supportMacOS(String content) {
   }
 }
 
-bool supportWeb(String content) {
+bool _supportWeb(String content) {
   try {
     return _platformSupport('web', content);
   } catch (e) {
@@ -182,7 +190,7 @@ bool supportWeb(String content) {
   }
 }
 
-bool supportWindows(String content) {
+bool _supportWindows(String content) {
   try {
     return _platformSupport('windows', content);
   } catch (e) {
@@ -190,7 +198,7 @@ bool supportWindows(String content) {
   }
 }
 
-bool supportLinux(String content) {
+bool _supportLinux(String content) {
   try {
     return _platformSupport('linux', content);
   } catch (e) {

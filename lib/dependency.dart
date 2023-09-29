@@ -63,5 +63,8 @@ class Dependency {
   }
 
   bool isUpToDate() =>
-      currentVersion.endsWith(version) || currentVersion == 'git';
+      currentVersion.endsWith(version) ||
+      currentVersion == 'flutter' ||
+      currentVersion == 'git' ||
+      currentVersion == 'local';
 }
