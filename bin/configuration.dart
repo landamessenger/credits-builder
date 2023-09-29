@@ -81,15 +81,20 @@ Future<PackagePublisher?> _getPublisher(String id) async {
 
 Future<Dependency?> getData(String id, dynamic version) async {
   try {
-    var v = version.toString().contains('git')
-        ? 'git'
-        : (version.toString().contains('{path:')
-            ? 'local'
-            : (version.toString().contains('{sdk: flutter}')
-                ? 'flutter'
-                : version.toString()));
+    String v = '';
+    bool findUpdate = false;
+    if (version.toString().contains('git')) {
+      v = 'git';
+    } else if (version.toString().contains('{path:')) {
+      v = 'local';
+    } else if (version.toString().contains('{sdk: flutter}')) {
+      v = 'sdk';
+    } else {
+      v = version.toString();
+      findUpdate = true;
+    }
 
-    final info = await _getInfo(id);
+    final info = findUpdate ? await _getInfo(id) : null;
     final publisher = await _getPublisher(id);
     var url = Uri.https('pub.dev', 'packages/$id');
     var urlLicense = Uri.https('pub.dev', 'packages/$id/license');
@@ -107,7 +112,7 @@ Future<Dependency?> getData(String id, dynamic version) async {
       licenseContent: licenseContent,
       publisher: publisher?.publisherId ?? "",
       currentVersion: v,
-      version: info?.version ?? "",
+      version: info?.version ?? v,
       supportsAndroid: _supportAndroid(response.body),
       supportsIOS: _supportIOS(response.body),
       supportsLinux: _supportLinux(response.body),
@@ -116,9 +121,7 @@ Future<Dependency?> getData(String id, dynamic version) async {
       supportsWindows: _supportWindows(response.body),
     );
   } catch (e) {
-    if (kDebugMode) {
-      print(e);
-    }
+    print(e);
     return null;
   }
 }
