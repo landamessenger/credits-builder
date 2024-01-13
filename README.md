@@ -26,7 +26,7 @@ dart run credits_builder:start
 
 ### Runtime side
 
-You can get all the dependencies:
+Basic way to retrieve dependencies at runtime:
 
 ```dart
 Future<List<Dependency>> getDependencies(BuildContext context) =>
