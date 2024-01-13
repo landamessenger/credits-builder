@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'configuration.dart';
+import 'package:credits_builder/credits_builder.dart';
 
-const kDebugMode = true;
+import 'base_methods.dart';
 
 void main(List<String> arguments) async {
   var dependencies = loadDependenciesFile();
@@ -36,7 +36,9 @@ void main(List<String> arguments) async {
     map['dependencies'][dependency.id] = dependency.toJson();
   }
 
-  final File file = File('./${config['assets']}');
+  final String outputFile = config['outputFile'] ?? CreditsBuilder().path;
+
+  final File file = File('./$outputFile');
 
   var encoder = const JsonEncoder.withIndent('  ');
   file.writeAsStringSync(encoder.convert(map));

@@ -4,6 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('dummy', () {
     final creditsBuilder = CreditsBuilder();
-    expect(3, 3);
+    expect(creditsBuilder.path.isNotEmpty, true);
   });
 }

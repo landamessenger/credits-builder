@@ -19,7 +19,7 @@ class CreditsBuilder {
     return _instance!;
   }
 
-  String path = "assets/credits.json";
+  String path = "assets/dependencies.json";
 
   final dependencies = <Dependency>[];
 

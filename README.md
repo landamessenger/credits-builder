@@ -1,39 +1,59 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Credits builder
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
+A simple package to generate a credit page of your dependencies. The best way to thank and appreciate the work of third party libraries.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
+## Configuration
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+Setup the dependency:
 
-## Features
+```yaml
+dependencies:
+  credits_builder: ^0.0.1                 # android   ios   linux   macos   web   windows
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+credits_builder:
+  outputFile: "assets/dependencies.json"  # default value
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+### Generate the dependencies file
 
-```dart
-const like = 'sample';
+By running this command you will create/update your dependencies file in the assets folder (`assets/dependencies.json`):
+
+```bash
+dart run credits_builder:start
 ```
 
-## Additional information
+### Runtime side
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+You can get all the dependencies:
+
+```dart
+Future<List<Dependency>> getDependencies(BuildContext context) =>
+      CreditsBuilder().config().get(context);
+```
+
+If you defined a dependency file name different from the default you can retrieve the information like this:
+
+```dart
+ Future<List<Dependency>> getDependencies(BuildContext context) =>
+    CreditsBuilder()
+        .config(
+          path: 'assets/other_file_name.json',
+        )
+        .get(context);
+```
+
+If you want to preprocess the file information before using it (for example to deobfuscate the file with [Stringcare](https://github.com/StringCare/stringcare)) you can do it like this:
+
+```dart
+ Future<List<Dependency>> getDependencies(BuildContext context) =>
+    CreditsBuilder()
+        .config(
+          process: (data) async => Stringcare().revealData(data) ?? data,
+        )
+        .get(context);
+```
+
+
+
