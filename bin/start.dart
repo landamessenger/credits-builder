@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:credits_builder/credits_builder.dart';
-
 import 'base_methods.dart';
 
 void main(List<String> arguments) async {
@@ -36,7 +34,7 @@ void main(List<String> arguments) async {
     map['dependencies'][dependency.id] = dependency.toJson();
   }
 
-  final String outputFile = config['outputFile'] ?? CreditsBuilder().path;
+  final String outputFile = config['outputFile'] ?? "assets/dependencies.json";
 
   final File file = File('./$outputFile');
 
