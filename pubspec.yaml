@@ -1,6 +1,6 @@
 name: credits_builder
 description: A Flutter package for build a credits page of your dependencies.
-version: 0.0.2
+version: 0.0.3
 homepage: https://landamessenger.com/
 
 environment:

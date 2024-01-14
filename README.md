@@ -8,7 +8,7 @@ Setup the dependency:
 
 ```yaml
 dependencies:
-  credits_builder: ^0.0.1                 # android   ios   linux   macos   web   windows
+  credits_builder: ^0.0.3                 # android   ios   linux   macos   web   windows
 
 credits_builder:
   outputFile: "assets/dependencies.json"  # default value
@@ -55,5 +55,8 @@ If you want to preprocess the file information before using it (for example to d
         .get(context);
 ```
 
+## Sample
+
+Checkout this sample: [https://landamessenger.com/credits](https://landamessenger.com/credits)
 
 
