@@ -1,3 +1,7 @@
+## 1.0.0
+
+* Dependencies updated.
+
 ## 0.0.3
 
 * Readme updated.
